@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     # Dummy values so app.core.config can load; real secrets never belong in CI config.
     env:
-      DATABASE_URL: postgresql://user:password@localhost:5432/test
+      DATABASE_URL: postgresql+psycopg2://user:password@localhost:5432/test
       SECRET_KEY: ci-test-key
       ENVIRONMENT: test
     steps:

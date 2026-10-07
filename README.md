@@ -34,12 +34,16 @@ pip install -r requirements-dev.txt
 # 3. Configure environment variables
 cp .env.example .env   # then edit the values
 
-# 4. Start the API
+# 4. Start Postgres and apply migrations
+docker compose up -d
+alembic upgrade head
+
+# 5. Start the API
 uvicorn app.main:app --reload
 
-# 5. Check it is running
+# 6. Check it is running
 curl http://localhost:8000/health
 
-# 6. Run the tests
+# 7. Run the tests
 pytest
 ```
