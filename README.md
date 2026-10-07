@@ -1,5 +1,7 @@
 # Food Rescue Matcher
 
+[![CI](https://github.com/jary-c30/Food-Rescue-Matcher/actions/workflows/ci.yml/badge.svg)](https://github.com/jary-c30/Food-Rescue-Matcher/actions/workflows/ci.yml)
+
 Every day, restaurants and grocers throw away edible food while shelters and food banks nearby go short. Closing that gap is hard because pickups are time-sensitive, donations are irregular, and volunteer drivers have limited time. Food Rescue Matcher matches surplus food from donors to the recipients that need it, then groups pickups into efficient routes for volunteer drivers.
 
 ## Planned Features
