@@ -1,20 +1,12 @@
-import enum
 from datetime import datetime
 
 from sqlalchemy import DateTime, Enum, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
+from app.core.enums import DonationStatus
 from app.models.donor import Donor
 from app.models.mixins import TimestampMixin
-
-
-class DonationStatus(str, enum.Enum):
-    AVAILABLE = "available"
-    MATCHED = "matched"
-    PICKED_UP = "picked_up"
-    DELIVERED = "delivered"
-    EXPIRED = "expired"
 
 
 class Donation(TimestampMixin, Base):
