@@ -5,13 +5,20 @@ Working notes so the project can be picked up without the original chat history.
 ## Goal
 Resume project for Summer 2027 internship applications: a FastAPI + PostgreSQL app that matches surplus food from donors (restaurants, grocers) to recipients (shelters, food banks) and groups pickups into routes for volunteer drivers.
 
-## Status (as of 2026-10-08)
+## Status (as of 2026-10-11)
+See [CHECKLIST.md](CHECKLIST.md) for the detailed, explained checklist.
+
 - [x] Step 1: scaffolding (folders, config, `/health` endpoint + test, README)
 - [x] Step 2: GitHub Actions CI (ruff + pytest)
 - [x] Step 3: database foundation (SQLAlchemy, Alembic, Postgres via Docker Compose)
 - [x] Step 4: models (`Donor`, `Recipient`, `Driver`, `Donation`) + initial migration
 - [x] Extras: `scripts/seed.py`, `scripts/queries.sql`
-- [ ] Step 5: Pydantic schemas + CRUD endpoints, test database, Postgres service in CI
+- [ ] Step 5 (in progress):
+  - [x] Pydantic schemas with validation + tests
+  - [x] Test database (`food_rescue_test`), `TEST_DATABASE_URL` setting, `tests/conftest.py` engine fixture with safety guards
+  - [ ] `db_session` fixture (per-test rollback) + isolation test
+  - [ ] CRUD endpoints + API tests
+  - [ ] Postgres service in CI
 - [ ] Matching service (with unit tests and a baseline comparison)
 - [ ] Match/route tables and route grouping (driver capacity, time windows)
 - [ ] Simulation script producing metrics for the README
@@ -32,6 +39,8 @@ Request flow: `api` validates with a schema -> calls a `service` -> reads/writes
 - **Plain latitude/longitude floats, not PostGIS**: distance math (haversine) stays in testable Python. PostGIS is a possible later upgrade.
 - **`donations.status` as string + CHECK constraint, not a native Postgres enum**: adding a status later is a simple constraint change. Values: available, matched, picked_up, delivered, expired.
 - **Database URL uses `postgresql+psycopg2://`**: SQLAlchemy 2.x defaults plain `postgresql://` to psycopg v3, which is not installed.
+- **Test DB safety guard**: `tests/conftest.py` refuses to run unless `TEST_DATABASE_URL` is set, differs from `DATABASE_URL`, and the database name ends in `_test`. It creates the test database if missing and builds tables with `create_all` (not Alembic) once per run.
+- **`DonationStatus` lives in `app/core/enums.py`** so schemas do not import the database layer.
 - **Alembic reads `DATABASE_URL` from app settings** (`migrations/env.py`), so the app and migrations always agree.
 
 ## Running locally
@@ -55,6 +64,7 @@ If `docker` is not found in a terminal, open a new terminal, or run
 - Homebrew Postgres failed (Command Line Tools too old), so Docker Desktop is used instead.
 - Alembic autogenerate duplicated the status CHECK constraint; the duplicate was removed by hand in the migration.
 - `app.core.config` builds `Settings()` on import, so CI sets dummy `DATABASE_URL`, `SECRET_KEY`, `ENVIRONMENT`.
+- Unpinned ruff drifted (laptop 0.16.10 vs CI 0.17.0, new UP017 rule) and failed CI; ruff is now pinned in `requirements-dev.txt`. Pin the rest of the dependencies during polish.
 - Starlette's `TestClient` shows a deprecation warning about `httpx` (harmless).
 
 ## Ideas that would make the project stand out
