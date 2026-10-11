@@ -1,13 +1,13 @@
 """Fill the dev database with sample data. Run from the project root: python -m scripts.seed"""
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from app.core.database import SessionLocal
 from app.models import Donation, DonationStatus, Donor, Driver, Recipient
 
 
 def main() -> None:
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     hour = timedelta(hours=1)
 
     with SessionLocal() as db:
